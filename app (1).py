@@ -3,14 +3,10 @@ import streamlit as st
 st.set_page_config(page_title="🧮CalorieCounting", layout="centered")
 
 # Title
-st.title("🔢 CalorieCounting 🔢")
+st.title("🔢CalorieCounting🔢")
 
 # Description
-st.write("""Calorie counting adalah metode untuk mengelola berat badan dan kesehatan secara keseluruhan dengan memantau jumlah kalori yang dikonsumsi dari makanan dan minuman. Aplikasi atau konsep ini membantu individu untuk tetap berada dalam defisit kalori (untuk menurunkan berat badan), surplus kalori (untuk menambah berat badan), atau mempertahankan asupan kalori sesuai dengan kebutuhan harian mereka.
-Pendekatan yang kami gunakan mengintegrasikan prinsip 4 Sehat 5 Sempurna, sebuah pedoman gizi seimbang yang populer di Indonesia. Konsep ini menekankan pentingnya mengonsumsi makanan yang terdiri dari empat kelompok utama: makanan pokok, lauk pauk, sayuran, dan buah-buahan, dengan susu sebagai pelengkap ('sempurna'). Dengan menggabungkan calorie counting dan 4 Sehat 5 Sempurna, pengguna tidak hanya memperhatikan jumlah kalori, tetapi juga kualitas nutrisi dari makanan yang mereka konsumsi.
-Aplikasi atau panduan ini memungkinkan pengguna untuk mencatat asupan makanan mereka, melihat perkiraan jumlah kalori, dan mendapatkan rekomendasi menu harian yang seimbang berdasarkan prinsip 4 Sehat 5 Sempurna dan target kalori mereka. Ini membantu memastikan bahwa meskipun pengguna fokus pada pengelolaan kalori, mereka tetap mendapatkan nutrisi esensial yang dibutuhkan oleh tubuh."""")
-
-# Sidebar for input
+st.write("Hello,welcome to *CalorieCounting!* :🙋‍♀️:")
 with st.sidebar:
     st.header("Input Parameter")
     ion_type = st.radio("Pilih jenis ion yang diketahui:", ("[H⁺]", "[OH⁻]"))
