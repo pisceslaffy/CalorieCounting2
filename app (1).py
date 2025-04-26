@@ -1,18 +1,5 @@
 import streamlit as st
 
-def set_background(image_url):
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background-image: url("{image_url}");
-            background-size: cover;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-
 # Ganti dengan URL gambar latar belakang Anda
 background_image_url = "https://images.app.goo.gl/71bsrLed5eKivXjKA"
 
