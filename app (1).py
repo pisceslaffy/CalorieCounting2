@@ -1,5 +1,30 @@
 import streamlit as st
 
+def set_background(image_url):
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-image: url("{image_url}");
+            background-size: cover;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+# Ganti dengan URL gambar latar belakang Anda
+background_image_url = "https://images.app.goo.gl/71bsrLed5eKivXjKA"
+
+set_background(background_image_url)
+
+# Judul Aplikasi
+st.title("CalorieCounting")
+
+# Konten aplikasi Anda di sini...
+st.write("Selamat datang di aplikasi CalorieCounting!")
+st.button("Klik Saya")
+
 st.set_page_config(page_title="CalorieCounting", layout="centered")
 
 # Title
