@@ -1,7 +1,6 @@
 import streamlit as st
 
 st.set_page_config(page_title="CalorieCounting", layout="centered")
-st.image("pangan.jpg", caption="Hello,welocome to *CalorieCounting!*")
 
 # Title
 st.title("🔢CalorieCounting🔢")
