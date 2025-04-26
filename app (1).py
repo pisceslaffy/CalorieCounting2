@@ -3,7 +3,7 @@ import streamlit as st
 st.set_page_config(page_title="🧮CalorieCounting", layout="centered")
 
 # Title
-st.title("🧪 Kalkulator pH & pOH Larutan")
+st.title("CalorieCounting")
 
 # Description
 st.write("""
