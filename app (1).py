@@ -1,12 +1,13 @@
 import streamlit as st
 
-st.set_page_config(page_title="🧮CalorieCounting", layout="centered")
+st.set_page_config(page_title="CalorieCounting", layout="centered")
+st.image("pangan.jpg", caption="Hello,welocome to *CalorieCounting!*")
 
 # Title
 st.title("🔢CalorieCounting🔢")
 
 # Description
-st.write("Hello,welcome to *CalorieCounting!* :🙋‍♀️:")
+st.write("Aplikasi atau panduan ini memungkinkan pengguna untuk mencatat asupan makanan mereka, melihat perkiraan jumlah kalori, dan mendapatkan rekomendasi menu harian yang seimbang berdasarkan prinsip 4 Sehat 5 Sempurna dan target kalori mereka. Ini membantu memastikan bahwa meskipun pengguna fokus pada pengelolaan kalori, mereka tetap mendapatkan nutrisi esensial yang dibutuhkan oleh tubuh." :🙋‍♀️:")
 with st.sidebar:
     st.header("Input Parameter")
     ion_type = st.radio("Pilih jenis ion yang diketahui:", ("[H⁺]", "[OH⁻]"))
