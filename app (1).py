@@ -1,90 +1,128 @@
 import streamlit as st
+import pandas as pd
+import base64
+import numpy as np
 
-# Ganti dengan URL gambar latar belakang Anda
-background_image_url = "https://images.app.goo.gl/71bsrLed5eKivXjKA"
-
-set_background(background_image_url)
-
-# Judul Aplikasi
-st.title("CalorieCounting")
-
-# Konten aplikasi Anda di sini...
-st.write("Selamat datang di aplikasi CalorieCounting!")
-st.button("Klik Saya")
-
-st.set_page_config(page_title="CalorieCounting", layout="centered")
-
-# Title
-st.title("🔢CalorieCounting🔢")
-
-# Description
-with st.sidebar:
-    st.header("Input Parameter")
-    ion_type = st.radio("Pilih jenis ion yang diketahui:", ("[H⁺]", "[OH⁻]"))
-    concentration = st.number_input(f"Masukkan konsentrasi {ion_type} (mol/L):", min_value=1e-14, max_value=1.0, format="%.2e")
-    show_dark_mode = st.checkbox("Aktifkan Mode Gelap")
-
-# Apply dark mode
-if show_dark_mode:
+# --- Fungsi untuk mengatur latar belakang ---
+def set_background(image_url):
     st.markdown(
-        """
+        f"""
         <style>
-            body { background-color: #1e1e1e; color: white; }
-            .stApp { background-color: #1e1e1e; }
+        .stApp {{
+            background-image: url("{image_url}");
+            background-size: cover;
+        }}
         </style>
-        """, unsafe_allow_html=True
+        """,
+        unsafe_allow_html=True
     )
 
-# Divider
+# --- Fungsi untuk menghitung BMR dan kebutuhan kalori ---
+def hitung_bmr(jenis_kelamin, berat_kg, tinggi_cm, usia_tahun, tingkat_aktivitas):
+    if jenis_kelamin.lower() == 'laki-laki':
+        bmr = 88.362 + (13.397 * berat_kg) + (4.799 * tinggi_cm) - (5.677 * usia_tahun)
+    elif jenis_kelamin.lower() == 'perempuan':
+        bmr = 447.593 + (9.247 * berat_kg) + (3.098 * tinggi_cm) - (4.330 * usia_tahun)
+    else:
+        return None, None
+
+    if tingkat_aktivitas.lower() == 'ringan':
+        kebutuhan_kalori = bmr * 1.2
+    elif tingkat_aktivitas.lower() == 'sedang':
+        kebutuhan_kalori = bmr * 1.375
+    elif tingkat_aktivitas.lower() == 'berat':
+        kebutuhan_kalori = bmr * 1.55
+    elif tingkat_aktivitas.lower() == 'sangat berat':
+        kebutuhan_kalori = bmr * 1.725
+    else:
+        kebutuhan_kalori = bmr * 1.2  # Default jika tidak valid
+
+    return bmr, kebutuhan_kalori
+
+# --- Data Menu Makanan 4 Sehat 5 Sempurna (Contoh Sebagian) ---
+data_menu = {
+    "Pagi": [
+        {"nama": "Nasi Goreng Ayam", "kkal_per_gram": 1.5, "deskripsi": "Nasi dengan ayam, telur, dan sayuran."},
+        {"nama": "Bubur Ayam", "kkal_per_gram": 0.8, "deskripsi": "Bubur nasi dengan suwiran ayam dan pelengkap."},
+        {"nama": "Roti Gandum Selai Kacang", "kkal_per_gram": 2.8, "deskripsi": "Roti gandum dengan selai kacang."},
+        # ... tambahkan menu pagi lainnya hingga total 100
+    ],
+    "Siang": [
+        {"nama": "Nasi Ayam Bakar", "kkal_per_gram": 1.8, "deskripsi": "Nasi dengan ayam bakar dan lalapan."},
+        {"nama": "Nasi Ikan Goreng", "kkal_per_gram": 2.0, "deskripsi": "Nasi dengan ikan goreng dan sayur."},
+        {"nama": "Gado-gado", "kkal_per_gram": 1.2, "deskripsi": "Sayuran rebus dengan bumbu kacang."},
+        # ... tambahkan menu siang lainnya hingga total 100
+    ],
+    "Malam": [
+        {"nama": "Nasi Tahu Tempe", "kkal_per_gram": 1.1, "deskripsi": "Nasi dengan tahu dan tempe bacem/goreng."},
+        {"nama": "Nasi Tim Ayam", "kkal_per_gram": 1.3, "deskripsi": "Nasi lembek dengan cincangan ayam dan sayuran."},
+        {"nama": "Ikan Pesmol Nasi", "kkal_per_gram": 1.6, "deskripsi": "Ikan dengan bumbu pesmol dan nasi."},
+        # ... tambahkan menu malam lainnya hingga total 100
+    ],
+    "Selingan": [
+        {"nama": "Buah Apel", "kkal_per_gram": 0.5, "deskripsi": "Buah apel segar."},
+        {"nama": "Yogurt Plain", "kkal_per_gram": 0.6, "deskripsi": "Yogurt tanpa tambahan gula."},
+        {"nama": "Kacang Almond", "kkal_per_gram": 5.8, "deskripsi": "Segenggam kacang almond."},
+        # ... tambahkan menu selingan lainnya hingga total 100
+    ],
+    "Pelengkap": [
+        {"nama": "Susu Rendah Lemak", "kkal_per_gram": 0.7, "deskripsi": "Segelas susu rendah lemak."},
+        # ... tambahkan pelengkap lainnya hingga total 100
+    ]
+}
+
+# --- Pengaturan Latar Belakang ---
+background_image_url = "https://images.unsplash.com/photo-1540189490227-7159967d9c7c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8Zm9vZHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=800&q=60" # Ganti dengan URL gambar Anda
+set_background(background_image_url)
+
+# --- Judul dan Deskripsi Web ---
+st.title("Aplikasi Penghitung Kalori & Saran Menu 4 Sehat 5 Sempurna")
+st.markdown("Selamat datang di aplikasi sederhana untuk menghitung kebutuhan kalori harian Anda dan mendapatkan saran menu makanan sehat berdasarkan prinsip 4 Sehat 5 Sempurna.")
 st.markdown("---")
 
-if st.button("Hitung pH dan pOH"):
-    if ion_type == "[H⁺]":
-        pH = -math.log10(concentration)
-        pOH = 14 - pH
-    else:
-        pOH = -math.log10(concentration)
-        pH = 14 - pOH
-
-    if pH < 7:
-        sifat = "Asam"
-        sifat_desc = "Asam berarti larutan memiliki ion H⁺ yang lebih banyak daripada OH⁻."
-    elif pH == 7:
-        sifat = "Netral"
-        sifat_desc = "Larutan netral memiliki konsentrasi ion H⁺ dan OH⁻ yang seimbang."
-    else:
-        sifat = "Basa"
-        sifat_desc = "Basa berarti larutan memiliki ion OH⁻ yang lebih banyak daripada H⁺."
-
-    if pH < 4:
-        indikator = "Metil Merah"
-    elif 4 <= pH < 7:
-        indikator = "Bromtimol Biru"
-    elif 7 <= pH < 10:
-        indikator = "Fenolftalein"
-    else:
-        indikator = "Lakmus Biru"
-
-    st.success(f"pH: {pH:.2f}")
-    st.info(f"pOH: {pOH:.2f}")
-    st.warning(f"Sifat larutan: {sifat}")
-    st.caption(sifat_desc)
-    st.markdown(f"**🔬 Rekomendasi indikator pH:** {indikator}")
-
-    # Visualisasi
-    st.subheader("🌈 Visualisasi Skala pH")
-    colors = ["#ff0000", "#ff4500", "#ffa500", "#ffff00", "#adff2f", "#00ff00",
-              "#00fa9a", "#00ced1", "#1e90ff", "#4169e1", "#0000cd", "#00008b", "#191970", "#4b0082", "#8a2be2"]
-
-    st.markdown("<div style='display: flex; flex-direction: row;'>", unsafe_allow_html=True)
-    for i in range(15):
-        highlight = "border: 3px solid black;" if int(round(pH)) == i else ""
-        st.markdown(
-            f"<div style='background-color: {colors[i]}; width: 30px; height: 40px; margin-right: 2px; {highlight}' title='pH {i}'></div>",
-            unsafe_allow_html=True
-        )
-    st.markdown("</div>", unsafe_allow_html=True)
-    st.caption(f"pH kamu di sekitar angka {round(pH)} pada skala warna di atas.")
-
+# --- Input Data Pengguna ---
+st.subheader("Masukkan Data Diri Anda")
+nama = st.text_input("Nama Lengkap:")
+tinggi = st.number_input("Tinggi Badan (cm):", min_value=1.0, max_value=300.0, value=170.0)
+berat = st.number_input("Berat Badan (kg):", min_value=1.0, max_value=500.0, value=70.0)
+usia = st.number_input("Usia (Tahun):", min_value=1, max_value=150, value=30, step=1)
+jenis_kelamin = st.radio("Jenis Kelamin", ("Laki-laki", "Perempuan"))
+tingkat_aktivitas = st.selectbox(
+    "Tingkat Aktivitas",
+    ("Ringan", "Sedang", "Berat", "Sangat Berat")
+)
 st.markdown("---")
-st.caption("📘 Made with Streamlit for educational purposes.")
+
+# --- Perhitungan Kebutuhan Kalori dan Saran Menu ---
+if st.button("Hitung Kebutuhan Kalori & Berikan Saran Menu"):
+    bmr, kebutuhan_kalori = hitung_bmr(jenis_kelamin, berat, tinggi, usia, tingkat_aktivitas)
+    if bmr is not None:
+        st.subheader("Hasil Perhitungan Kebutuhan Kalori")
+        st.write(f"Basal Metabolic Rate (BMR) Anda adalah: **{bmr:.2f}** kalori.")
+        st.write(f"Perkiraan Kebutuhan Kalori Harian Anda adalah: **{kebutuhan_kalori:.2f}** kalori.")
+        st.markdown("---")
+
+        st.subheader("Saran Menu Makanan 4 Sehat 5 Sempurna")
+        st.info(f"Berikut adalah contoh saran menu makanan dengan perkiraan kebutuhan kalori harian Anda sekitar **{kebutuhan_kalori:.0f}** kalori. Sesuaikan porsi sesuai kebutuhan Anda.")
+
+        def display_menu(meal_type):
+            st.subheader(meal_type)
+            for i, menu in enumerate(data_menu[meal_type][:3]): # Menampilkan 3 contoh per waktu makan
+                st.write(f"{i+1}. **{menu['nama']}** ({menu['kkal_per_gram']:.2f} kkal/gram): {menu['deskripsi']}")
+            st.markdown("...") # Tanda bahwa ada lebih banyak menu
+
+        display_menu("Pagi")
+        display_menu("Siang")
+        display_menu("Malam")
+        display_menu("Selingan")
+        display_menu("Pelengkap")
+
+        st.markdown("---")
+        st.balloons() # Animasi balon setelah perhitungan dan saran ditampilkan
+
+    else:
+        st.error("Jenis kelamin tidak valid.")
+
+# --- Penutup Aplikasi ---
+st.markdown("## Terima kasih telah menggunakan aplikasi ini!")
+st.markdown("Semoga membantu Anda dalam perjalanan menuju hidup sehat.")
