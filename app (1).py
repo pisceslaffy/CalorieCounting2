@@ -76,7 +76,7 @@ background_image_url = "https://images.unsplash.com/photo-1540189490227-7159967d
 set_background(background_image_url)
 
 # --- Judul dan Deskripsi Web ---
-st.title("Aplikasi Penghitung Kalori & Saran Menu 4 Sehat 5 Sempurna")
+st.title("CalorieCounting")
 st.markdown("Selamat datang di aplikasi sederhana untuk menghitung kebutuhan kalori harian Anda dan mendapatkan saran menu makanan sehat berdasarkan prinsip 4 Sehat 5 Sempurna.")
 st.markdown("---")
 
